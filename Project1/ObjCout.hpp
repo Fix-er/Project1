@@ -11,7 +11,7 @@ struct CountThis
     CountThis(CountThis&&) { ++ObjCounter< T >; }
     CountThis& operator=(const CountThis&) = default;
     CountThis& operator=(CountThis&&) = default;
-    ~CountThis() = default;
+    ~CountThis()                      = default;
 
     static size_t get() { return ObjCounter< T >; }
     static void   reset() { ObjCounter< T > = 0; }

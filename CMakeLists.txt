@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.8)
+project(P1)
+add_executable(P1 Project1/Projekt1.cpp)
+target_include_directories(P1 PUBLIC Project1)
+set_target_properties(P1 PROPERTIES CXX_STANDARD 17)
