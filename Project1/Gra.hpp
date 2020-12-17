@@ -6,7 +6,6 @@ class Gra
 {
 public:
     Gra() : f(unique_ptr< Firma >(new Firma)), stan{true} {}
-    ~Gra() {}
     bool get_stan() { return stan; }
     void akcja_gracza()
     {

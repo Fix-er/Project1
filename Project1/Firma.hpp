@@ -9,32 +9,6 @@
 #include <string_view>
 #include <vector>
 using namespace std;
-struct Rekruter
-{
-    unique_ptr< Pracownik > operator()(string b)
-    {
-        if (b == "Inz")
-        {
-            return make_unique< Inzynier >(get_random_name(), get_random_wydzial());
-        }
-        else if (b == "Mag")
-        {
-            return make_unique< Magazynier >(get_random_name(), get_random_bool());
-        }
-        else if (b == "Mkt")
-        {
-            return make_unique< Marketer >(get_random_name(), get_random_int());
-        }
-        else if (b == "Rob")
-        {
-            return make_unique< Robotnik >(get_random_name(), get_random_double());
-        }
-        else
-        {
-            cout << "Nie ma takiego pracownika" << '\n';
-        }
-    }
-};
 
 class Firma
 {
@@ -46,12 +20,11 @@ public:
         zatrudnij("Mkt");
         zatrudnij("Rob");
     }
-    ~Firma() {}
     void wez_kredyt(double kwota, int raty)
     {
         if (c_zadl <= M * wartosc_firmy())
         {
-            unique_ptr< Kredyt > k = make_unique< Kredyt >(kwota, raty);
+            Kredyt k =  Kredyt{kwota, raty};
             n_kredytow++;
             kredyt.emplace_back(move(k));
             stan_konta += kwota;
@@ -64,11 +37,39 @@ public:
     };
     void zatrudnij(string b)
     {
-        Rekruter                r;
-        unique_ptr< Pracownik > p = r(b);
-        wynagrodzenie += p->get_w();
-        prac.emplace_back(move(p));
-        n_prac++;
+        if (b == "Inz")
+        {
+            unique_ptr< Pracownik > p= make_unique< Inzynier >(get_random_name(),
+                                                                     get_random_wydzial());
+            wynagrodzenie += p->get_w();
+            prac.emplace_back(move(p));
+        }
+        else if (b == "Mag")
+        {
+            unique_ptr< Pracownik > p= make_unique< Magazynier >(get_random_name(),
+                                                                get_random_bool());
+            wynagrodzenie += p->get_w();
+            prac.emplace_back(move(p));
+        }
+        else if (b == "Mkt")
+        {
+            unique_ptr< Pracownik > p =
+                make_unique< Marketer >(get_random_name(), get_random_int());
+            wynagrodzenie += p->get_w();
+            prac.emplace_back(move(p));
+        }
+        else if (b == "Rob")
+        {
+            unique_ptr< Pracownik > p =
+                make_unique< Robotnik >(get_random_name(), get_random_double());
+            wynagrodzenie += p->get_w();
+            prac.emplace_back(move(p));
+        }
+        else
+        {
+            cout << "Nie ma takiego pracownika" << '\n';
+        }
+       n_prac++;
     };
     const void drukuj_pracownikow()
     {
@@ -83,27 +84,17 @@ public:
     {
         double suma    = 0;
         double wartosc = 0;
-        if (historia_przychodow.size() < N)
-        {
-            for_each(historia_przychodow.begin(), historia_przychodow.end(), [&](auto& it) {
+          for_each(historia_przychodow.begin(), historia_przychodow.end(), [&](auto& it) {
                 suma += it;
                 wartosc = suma / historia_przychodow.size();
             });
-        }
-        else
-        {
-            for (int i = historia_przychodow.size(); i > N; i--)
-            {
-                suma += historia_przychodow[i];
-                wartosc = suma / N;
-            }
-        }
+      
         return wartosc;
     };
     double splac_raty()
     {
         double raty = 0;
-        for_each(kredyt.begin(), kredyt.end(), [&](auto& it) { raty += it->splac_rate(); });
+        for_each(kredyt.begin(), kredyt.end(), [&](auto& it) { raty += it.splac_rate(); });
         return raty;
     }
 
@@ -135,12 +126,12 @@ public:
     }
 
 private:
-    int                               CI = 3, CMag = 4, CMkt = 5, CR = 3;
+   const  int                               CI = 3, CMag = 4, CMkt = 5, CR = 3;
     int                               wynagrodzenie = 0;
     double                            stan_konta;
     int                               n_kredytow;
     vector< unique_ptr< Pracownik > > prac;
-    vector< unique_ptr< Kredyt > >    kredyt;
+    vector<  Kredyt >     kredyt;
     int                               n_prac;
     double                            M      = 2;
     double                            c_zadl = 0;

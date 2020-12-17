@@ -11,10 +11,10 @@ class Pracownik
 {
 public:
     virtual void print() = 0;
-
     virtual int get_w() = 0;
     Pracownik() : imie{"Anonymous"} {}
     Pracownik(string a) : imie{move(a)} {}
+    virtual ~Pracownik() = default;
     string imie;
 };
 

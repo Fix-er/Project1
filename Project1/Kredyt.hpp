@@ -19,7 +19,6 @@ public:
         }
         rata = (dlug * odsetki) / pozostale_raty;
     }
-    ~Kredyt() {}
     double splac_rate()
     {
         if (dlug >= 0)
